@@ -134,6 +134,7 @@
     .shell { padding: 0; }
     .term { height: 100%; border-radius: 0; border: 0; }
     body { font-size: 13px; }
+    #input { font-size: 16px; }
   }
 </style>
 </head>
@@ -152,7 +153,7 @@
 
     <form id="form" autocomplete="off">
       <label class="ps1" for="input">uday@github:~$</label>
-      <input id="input" name="cmd" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Terminal input">
+      <input id="input" name="cmd" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" enterkeyhint="send" aria-label="Terminal input">
       <span class="cursor" aria-hidden="true"></span>
     </form>
 
@@ -356,7 +357,10 @@
     lines.push("");
     var i = 0;
     (function next() {
-      if (i >= lines.length) { input.focus(); return; }
+      if (i >= lines.length) {
+        if (!window.matchMedia || window.matchMedia("(pointer: fine)").matches) input.focus();
+        return;
+      }
       el("", lines[i++]);
       setTimeout(next, 70);
     })();
