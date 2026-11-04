@@ -87,7 +87,20 @@
     text-overflow: ellipsis;
   }
   .title b { color: var(--fg); font-weight: 600; }
-  .status { margin-left: auto; font-size: 11px; color: var(--muted); letter-spacing: .12em; display: flex; align-items: center; gap: 6px; }
+  .pf {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--bright);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+  .pf:hover { border-color: var(--green); color: #fff; }
+  .status { margin-left: 10px; font-size: 11px; color: var(--muted); letter-spacing: .12em; display: flex; align-items: center; gap: 6px; }
   .led { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2.4s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
 
@@ -146,6 +159,7 @@
     .term { height: 100%; border-radius: 0; border: 0; }
     body { font-size: 13px; }
     #input { font-size: 16px; }
+    .status { display: none; }
   }
 </style>
 </head>
@@ -157,6 +171,7 @@
     <div class="bar">
       <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
       <span class="title"><b>uday@github</b>: ~ — bash</span>
+      <a class="pf" href="https://udaysaireddy.dev/" target="_blank" rel="noopener">portfolio ↗</a>
       <span class="status"><span class="led"></span>SECURE</span>
     </div>
 
@@ -249,11 +264,14 @@
     },
     projects: function () {
       return [
-        "<span class='ok'>rakshacall</span>        browser-only scam-call guard, no backend, no uploads",
-        "                  <a href='https://udaysaireddy18.github.io/rakshacall/' target='_blank' rel='noopener'>live →</a>",
-        "<span class='ok'>siri-assistant</span>    Windows voice AI: speech, system control, study companion",
-        "<span class='ok'>bank-system</span>       DBMS project: vanilla JS front end + Node/Express API",
-        "<span class='ok'>portfolio</span>         typed, glassmorphic developer + photography site",
+        "<span class='muted'>featured/</span>",
+        "",
+        "<span class='ok'>shareX</span>       smart file sharing: upload, link, manage",
+        "             vanilla JS front end · Express + Supabase API",
+        "             <a href='https://github.com/udaysaireddy18/shareX' target='_blank' rel='noopener'>source →</a>",
+        "",
+        "<span class='ok'>rakshacall</span>   browser-only scam-call guard, no backend, no uploads",
+        "             <a href='https://www.rakshacall.udaysaireddy.dev' target='_blank' rel='noopener'>live →</a>  <a href='https://github.com/udaysaireddy18/rakshacall' target='_blank' rel='noopener'>source →</a>",
         "",
         "<span class='muted'>all repos →</span> <a href='https://github.com/udaysaireddy18?tab=repositories' target='_blank' rel='noopener'>github.com/udaysaireddy18</a>"
       ];
@@ -269,9 +287,10 @@
     },
     contact: function () {
       return [
-        "<span class='muted'>email </span> <a href='mailto:udaysaireddy181@outlook.com'>udaysaireddy181@outlook.com</a>",
-        "<span class='muted'>github</span> <a href='https://github.com/udaysaireddy18' target='_blank' rel='noopener'>github.com/udaysaireddy18</a>",
-        "<span class='muted'>site  </span> <a href='https://udaysaireddy18.github.io/'>udaysaireddy18.github.io</a>"
+        "<span class='muted'>email    </span> <a href='mailto:udaysaireddy181@outlook.com'>udaysaireddy181@outlook.com</a>",
+        "<span class='muted'>github   </span> <a href='https://github.com/udaysaireddy18' target='_blank' rel='noopener'>github.com/udaysaireddy18</a>",
+        "<span class='muted'>portfolio</span> <a href='https://udaysaireddy.dev/' target='_blank' rel='noopener'>udaysaireddy.dev</a>",
+        "<span class='muted'>terminal </span> <a href='https://udaysaireddy18.github.io/'>udaysaireddy18.github.io</a>"
       ];
     },
     matrix: function () {
