@@ -3,54 +3,408 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Uday Sai Reddy</title>
-<meta name="description" content="Full-stack web developer. B.Tech CSE at Aditya University.">
+<title>uday@github:~$</title>
+<meta name="description" content="Terminal of Uday Sai Reddy — full-stack web developer.">
 <meta name="color-scheme" content="dark">
 <style>
-  *{box-sizing:border-box}
-  body{
-    margin:0;min-height:100vh;display:grid;place-items:center;padding:32px 20px;color:#e6edf3;
-    background:radial-gradient(900px 520px at 50% -10%,#17253c 0%,transparent 65%),
-               radial-gradient(700px 420px at 85% 110%,#241a3a 0%,transparent 60%),#0d1117;
-    font-family:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace;
+  :root {
+    --bg: #050807;
+    --panel: #07120c;
+    --line: #14432a;
+    --fg: #c9f5d9;
+    --green: #3fb950;
+    --bright: #7ee787;
+    --muted: #5f8a70;
   }
-  main{width:min(640px,100%)}
-  .card{
-    border:1px solid #30363d;border-radius:18px;padding:32px;
-    background:linear-gradient(180deg,#131a24,#0d1117);
-    box-shadow:0 40px 80px -40px #000;
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 14px/1.65 ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+    overflow: hidden;
   }
-  h1{margin:0 0 6px;font-size:26px;letter-spacing:-.5px}
-  h1 span{background:linear-gradient(90deg,#58a6ff,#a371f7,#3fb950);-webkit-background-clip:text;background-clip:text;color:transparent}
-  p{margin:0 0 24px;color:#8b949e;font-size:13px;line-height:1.7}
-  .links{display:grid;gap:10px}
-  a{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:14px 16px;border:1px solid #30363d;border-radius:12px;
-    color:#e6edf3;text-decoration:none;font-size:13px;background:#0f151d;
-    transition:border-color .15s,transform .15s,background .15s;
+  #matrix {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .16;
+    transition: opacity .4s;
+    pointer-events: none;
   }
-  a:hover{border-color:#58a6ff;background:#111a26;transform:translateY(-1px)}
-  a b{font-weight:600}
-  a small{color:#8b949e;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
-  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:10px;vertical-align:1px}
-  .d1{background:#58a6ff}.d2{background:#a371f7}.d3{background:#3fb950}.d4{background:#f0883e}
-  footer{margin-top:18px;text-align:center;color:#6e7681;font-size:11px;letter-spacing:.18em}
+  body.loud #matrix { opacity: .42; }
+
+  .shell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 100%;
+    padding: 24px;
+  }
+  .term {
+    width: min(880px, 100%);
+    height: min(640px, 100%);
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #08150e, #050a07);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px #3fb95010 inset, 0 30px 80px -40px #000, 0 0 60px -20px #3fb95040;
+    overflow: hidden;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    background: #061009;
+    flex: 0 0 auto;
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .d1 { background: #ff5f56; } .d2 { background: #ffbd2e; } .d3 { background: #27c93f; }
+  .title {
+    margin-left: 8px;
+    font-size: 12px;
+    letter-spacing: .14em;
+    color: var(--muted);
+    text-transform: lowercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .title b { color: var(--fg); font-weight: 600; }
+  .status { margin-left: auto; font-size: 11px; color: var(--muted); letter-spacing: .12em; display: flex; align-items: center; gap: 6px; }
+  .led { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
+
+  #screen {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 18px 18px 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #1f6f3f transparent;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #screen::-webkit-scrollbar { width: 8px; }
+  #screen::-webkit-scrollbar-thumb { background: #1f6f3f; border-radius: 4px; }
+
+  .line { margin: 0 0 2px; }
+  .p { color: var(--green); }
+  .p b { color: var(--bright); font-weight: 600; }
+  .ok { color: var(--bright); }
+  .muted { color: var(--muted); }
+  .err { color: #f85149; }
+  .big { color: var(--bright); text-shadow: 0 0 14px #3fb95066; }
+  a { color: var(--bright); text-decoration: none; border-bottom: 1px dotted #3fb95066; }
+  a:hover { color: #fff; }
+
+  form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px 16px;
+    flex: 0 0 auto;
+  }
+  .ps1 { color: var(--green); white-space: nowrap; }
+  #input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--fg);
+    font: inherit;
+    caret-color: var(--green);
+  }
+  .cursor {
+    width: 8px; height: 16px; background: var(--green);
+    animation: blink 1.05s steps(1) infinite;
+    margin-left: -6px;
+  }
+  @keyframes blink { 0%,50% { opacity: 1 } 51%,100% { opacity: 0 } }
+
+  .hint { padding: 0 18px 14px; font-size: 11px; color: var(--muted); letter-spacing: .06em; flex: 0 0 auto; }
+  .hint kbd { border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--fg); }
+
+  @media (max-width: 560px) {
+    .shell { padding: 0; }
+    .term { height: 100%; border-radius: 0; border: 0; }
+    body { font-size: 13px; }
+  }
 </style>
 </head>
 <body>
-<main>
-  <div class="card">
-    <h1>Uday <span>Sai Reddy</span></h1>
-    <p>Full-stack web developer · B.Tech CSE @ Aditya University.<br>I build fast, local-first web apps.</p>
-    <div class="links">
-      <a href="https://github.com/udaysaireddy18"><span><i class="dot d1"></i><b>GitHub profile</b></span><small>code</small></a>
-      <a href="./dino/"><span><i class="dot d3"></i><b>Dino Run</b> — playable</span><small>game</small></a>
-      <a href="https://udaysaireddy18.github.io/rakshacall/"><span><i class="dot d2"></i><b>RakshaCall</b> — live app</span><small>project</small></a>
-      <a href="mailto:udaysaireddy181@outlook.com"><span><i class="dot d4"></i><b>Email me</b></span><small>contact</small></a>
+<canvas id="matrix" aria-hidden="true"></canvas>
+
+<div class="shell">
+  <div class="term" role="application" aria-label="Interactive terminal">
+    <div class="bar">
+      <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
+      <span class="title"><b>uday@github</b>: ~ — bash</span>
+      <span class="status"><span class="led"></span>SECURE</span>
     </div>
+
+    <div id="screen" tabindex="0"></div>
+
+    <form id="form" autocomplete="off">
+      <label class="ps1" for="input">uday@github:~$</label>
+      <input id="input" name="cmd" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Terminal input">
+      <span class="cursor" aria-hidden="true"></span>
+    </form>
+
+    <div class="hint">type <kbd>help</kbd> · <kbd>↑</kbd>/<kbd>↓</kbd> history · <kbd>Tab</kbd> complete · <kbd>Ctrl</kbd>+<kbd>L</kbd> clear</div>
   </div>
-  <footer>BUILT WITH HTML · NO FRAMEWORKS</footer>
-</main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var screen = document.getElementById("screen");
+  var form = document.getElementById("form");
+  var input = document.getElementById("input");
+  var history = [];
+  var hIndex = 0;
+
+  var BANNER = [
+    "██╗   ██╗██████╗  █████╗ ██╗   ██╗",
+    "██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝",
+    "██║   ██║██║  ██║███████║ ╚████╔╝ ",
+    "██║   ██║██║  ██║██╔══██║  ╚██╔╝  ",
+    "╚██████╔╝██████╔╝██║  ██║   ██║   ",
+    " ╚═════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   "
+  ];
+
+  function el(cls, html) {
+    var d = document.createElement("div");
+    d.className = "line " + (cls || "");
+    d.innerHTML = html;
+    screen.appendChild(d);
+    screen.scrollTop = screen.scrollHeight;
+    return d;
+  }
+
+  function echo(cmd) {
+    el("", '<span class="p">uday@github:~$</span> ' + escapeHtml(cmd));
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  var COMMANDS = {
+    help: function () {
+      return [
+        "<span class='ok'>available commands</span>",
+        "",
+        "  whoami      identity + current focus",
+        "  about       longer bio",
+        "  projects    what I have shipped",
+        "  stack       languages, frameworks, tools",
+        "  contact     email, github, site",
+        "  matrix      toggle the rain",
+        "  clear       wipe the screen",
+        "  sudo        try it",
+        "",
+        "<span class='muted'>Tab completes, ↑/↓ walks history.</span>"
+      ];
+    },
+    whoami: function () {
+      return [
+        "<span class='ok'>udaysaireddy18</span> — Uday Sai Reddy",
+        "full-stack web developer · B.Tech CSE @ Aditya University",
+        "",
+        "<span class='muted'>currently:</span> building local-first apps that keep user data on the device",
+        "<span class='muted'>status   :</span> <span class='ok'>open to internships</span>"
+      ];
+    },
+    about: function () {
+      return [
+        "Second-year B.Tech CSE student at Aditya University.",
+        "I build full-stack web apps and voice-first tools, and I care about",
+        "products that load fast, work offline when they can, and explain",
+        "themselves without a manual.",
+        "",
+        "Outside the editor I shoot photos — my portfolio doubles as a",
+        "photo journal."
+      ];
+    },
+    projects: function () {
+      return [
+        "<span class='ok'>rakshacall</span>        browser-only scam-call guard, no backend, no uploads",
+        "                  <a href='https://udaysaireddy18.github.io/rakshacall/' target='_blank' rel='noopener'>live →</a>",
+        "<span class='ok'>siri-assistant</span>    Windows voice AI: speech, system control, study companion",
+        "<span class='ok'>bank-system</span>       DBMS project: vanilla JS front end + Node/Express API",
+        "<span class='ok'>portfolio</span>         typed, glassmorphic developer + photography site",
+        "",
+        "<span class='muted'>all repos →</span> <a href='https://github.com/udaysaireddy18?tab=repositories' target='_blank' rel='noopener'>github.com/udaysaireddy18</a>"
+      ];
+    },
+    stack: function () {
+      return [
+        "<span class='muted'>languages </span> TypeScript · JavaScript · Python · SQL",
+        "<span class='muted'>frontend  </span> React · Vite · Tailwind · HTML/CSS",
+        "<span class='muted'>backend   </span> Node · Express · REST · PySide6",
+        "<span class='muted'>data      </span> MySQL · MongoDB",
+        "<span class='muted'>tooling   </span> Git · GitHub Actions · Vercel · Figma"
+      ];
+    },
+    contact: function () {
+      return [
+        "<span class='muted'>email </span> <a href='mailto:udaysaireddy181@outlook.com'>udaysaireddy181@outlook.com</a>",
+        "<span class='muted'>github</span> <a href='https://github.com/udaysaireddy18' target='_blank' rel='noopener'>github.com/udaysaireddy18</a>",
+        "<span class='muted'>site  </span> <a href='https://udaysaireddy18.github.io/'>udaysaireddy18.github.io</a>"
+      ];
+    },
+    matrix: function () {
+      document.body.classList.toggle("loud");
+      return [document.body.classList.contains("loud")
+        ? "<span class='ok'>rain boosted.</span> there is no spoon."
+        : "<span class='muted'>rain dimmed.</span> back to work."];
+    },
+    sudo: function () {
+      return ["<span class='err'>uday is not in the sudoers file.</span> This incident has been reported."];
+    },
+    ls: function () {
+      return ["about.txt   projects/   stack.txt   contact.md   <span class='muted'>.secrets (403)</span>"];
+    },
+    cat: function (args) {
+      var f = (args[0] || "").toLowerCase();
+      if (f === "about.txt") return COMMANDS.about();
+      if (f === "stack.txt") return COMMANDS.stack();
+      if (f === "contact.md") return COMMANDS.contact();
+      return ["<span class='err'>cat: " + escapeHtml(args[0] || "") + ": No such file or directory</span>"];
+    },
+    date: function () {
+      return [new Date().toString()];
+    },
+    exit: function () {
+      return ["<span class='muted'>connection to github.com closed.</span> (just kidding — scroll up)"];
+    }
+  };
+
+  function run(raw) {
+    var cmd = String(raw || "").trim();
+    if (!cmd) return;
+    echo(cmd);
+    history.push(cmd);
+    hIndex = history.length;
+
+    var parts = cmd.split(/\s+/);
+    var name = parts[0].toLowerCase();
+    var args = parts.slice(1);
+
+    if (name === "clear") { screen.innerHTML = ""; return; }
+    var fn = COMMANDS[name];
+    if (!fn) {
+      el("err", "bash: " + escapeHtml(name) + ": command not found — try <span class='ok'>help</span>");
+      return;
+    }
+    var out = fn(args) || [];
+    for (var i = 0; i < out.length; i++) el("", out[i] || "");
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    run(input.value);
+    input.value = "";
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (hIndex > 0) { hIndex--; input.value = history[hIndex] || ""; }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (hIndex < history.length - 1) { hIndex++; input.value = history[hIndex] || ""; }
+      else { hIndex = history.length; input.value = ""; }
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      var v = input.value.toLowerCase();
+      if (!v) return;
+      var match = Object.keys(COMMANDS).filter(function (k) { return k.indexOf(v) === 0; });
+      if (match.length === 1) input.value = match[0] + " ";
+    } else if (e.key === "l" && e.ctrlKey) {
+      e.preventDefault();
+      screen.innerHTML = "";
+    } else if (e.key.length === 1 && document.activeElement !== input) {
+      input.focus();
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest("a")) input.focus();
+  });
+
+  // ---- boot -------------------------------------------------------------
+  var booted = false;
+  function boot() {
+    if (booted) return;
+    booted = true;
+    var lines = BANNER.map(function (l) { return "<span class='big'>" + l + "</span>"; });
+    lines.push("");
+    lines.push("<span class='muted'>────────────────────────────────────────────────────────────</span>");
+    lines.push("");
+    lines.push("<span class='ok'>udaysaireddy18</span> · full-stack web developer · india");
+    lines.push("<span class='muted'>type</span> help <span class='muted'>to get started.</span>");
+    lines.push("");
+    var i = 0;
+    (function next() {
+      if (i >= lines.length) { input.focus(); return; }
+      el("", lines[i++]);
+      setTimeout(next, 70);
+    })();
+  }
+
+  window.__shell = { run: run, commands: Object.keys(COMMANDS) };
+
+  // ---- matrix rain ------------------------------------------------------
+  var canvas = document.getElementById("matrix");
+  var ctx = canvas.getContext("2d");
+  var cols = [], fontSize = 15, drops = [];
+
+  function fit() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(innerWidth * dpr);
+    canvas.height = Math.floor(innerHeight * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = Math.floor(innerWidth / fontSize);
+    drops = [];
+    for (var i = 0; i < n; i++) drops.push(Math.random() * (innerHeight / fontSize));
+    cols = n;
+  }
+
+  var glyphs = "01<>/\\|[]{}#$%&*+=~ABCDEF";
+  var last = 0;
+  function rain(t) {
+    requestAnimationFrame(rain);
+    if (t - last < 55) return;
+    last = t;
+    ctx.fillStyle = "rgba(5, 8, 7, 0.10)";
+    ctx.fillRect(0, 0, innerWidth, innerHeight);
+    ctx.font = fontSize + "px ui-monospace, Consolas, monospace";
+    for (var i = 0; i < cols; i++) {
+      var ch = glyphs[Math.floor(Math.random() * glyphs.length)];
+      var x = i * fontSize;
+      var y = drops[i] * fontSize;
+      ctx.fillStyle = Math.random() < 0.08 ? "#7ee787" : "#1f7a45";
+      ctx.fillText(ch, x, y);
+      if (y > innerHeight && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  window.addEventListener("resize", fit);
+  fit();
+  requestAnimationFrame(rain);
+  boot();
+})();
+</script>
 </body>
 </html>
